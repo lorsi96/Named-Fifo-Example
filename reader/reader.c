@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
 #include <errno.h>
 #include <string.h>
 #include <fcntl.h>
@@ -11,10 +12,31 @@
 #define FIFO_NAME "myfifo"
 #define BUFFER_SIZE 300
 
-int main(void)
-{
+#define TEXTLOG "/home/lorsi/Documents/SOpG/TP1/logs/Log.txt"
+#define SIGNLOG "/home/lorsi/Documents/SOpG/TP1/logs/Sign.txt"
+
+FILE *txtLog;
+FILE *signLog;
+
+void closeFiles(int _) {
+    fclose(txtLog);
+    fclose(signLog);
+}
+
+int main(void) {
 	uint8_t inputBuffer[BUFFER_SIZE];
 	int32_t bytesRead, returnCode, fd;
+    txtLog = fopen(TEXTLOG,"wr+");
+    signLog = fopen(SIGNLOG,"wr+");
+
+    struct sigaction sa = {
+        .sa_handler = closeFiles,
+        .sa_flags = 0
+    };
+
+    // Signals.
+	sigemptyset(&sa.sa_mask);
+	sigaction(SIGINT, &sa ,NULL);
     
     /* Create named fifo. -1 means already exists so no action if already exists */
     if ( (returnCode = mknod(FIFO_NAME, S_IFIFO | 0666, 0) ) < -1  )
@@ -45,6 +67,11 @@ int main(void)
         else
 		{
 			inputBuffer[bytesRead] = '\0';
+            if(inputBuffer[0] == 'D') {
+                fprintf(txtLog, "%s\n" ,inputBuffer);
+            } else {
+                fprintf(signLog, "%s\n" ,inputBuffer);
+            }
 			printf("reader: read %d bytes: \"%s\"\n", bytesRead, inputBuffer);
 		}
 	}

@@ -87,12 +87,11 @@ int main(void)
         if(strlen(outputBuffer) > 1) {
             if ((bytesWrote = write(fd, textBuffer, strlen(textBuffer)-1)) == -1) {
                 perror("write");
-            } else if(bytesWrote){
+            } else if(bytesWrote) {
                 printf("writer: wrote %d bytes\n", bytesWrote);
             }
             outputBuffer[0]='\0';
         }
-
 	}
 	return 0;
 }
