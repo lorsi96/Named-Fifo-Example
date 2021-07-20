@@ -8,14 +8,17 @@
 #include <unistd.h>
 #include <stdint.h>
 
+#define MAX_TXT_LEN 300
 #define FIFO_NAME "myfifo"
-#define BUFFER_SIZE 300
+
 
 int main(void)
 {
-   
-    char outputBuffer[BUFFER_SIZE];
-	uint32_t bytesWrote;
+    static char textBuffer[MAX_TXT_LEN] = "DATA:";
+    static uint32_t textBufferInd = 5;
+    static char signal[] = "SIGNAL:1";
+
+    uint32_t bytesWrote;
 	int32_t returnCode, fd;
 
     /* Create named fifo. -1 means already exists so no action if already exists */
@@ -37,18 +40,16 @@ int main(void)
 	printf("got a reader--type some stuff\n");
 
     /* Loop forever */
-	while (1)
-	{
+	for(;;) {
+        char* outputBuffer = textBuffer + textBufferInd;
         /* Get some text from console */
-		fgets(outputBuffer, BUFFER_SIZE, stdin);
+		fgets(outputBuffer, MAX_TXT_LEN - 5, stdin);
         
         /* Write buffer to named fifo. Strlen - 1 to avoid sending \n char */
-		if ((bytesWrote = write(fd, outputBuffer, strlen(outputBuffer)-1)) == -1)
-        {
+		if ((bytesWrote = write(fd, textBuffer, strlen(textBuffer)-1)) == -1) {
 			perror("write");
         }
-        else
-        {
+        else {
 			printf("writer: wrote %d bytes\n", bytesWrote);
         }
 	}
