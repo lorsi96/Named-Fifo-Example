@@ -22,5 +22,28 @@ SIGN:2
 This process will read the data from the named fifo and according to the header "DATA" or "SIGN" it will write to the
 file log.txt or signals.txt.
 
+# Build instructions
+```sh
+make all
+```
+
+# Run instructions
+In one terminal run
+```sh
+./build/writer
+```
+And in a different one
+```sh
+./build/reader
+```
+## Signal testing
+To try out the program behaviour using SIGUSR singals, try running
+the ```sigusr.sh``` with either 1 or 2 as argument. For example:
+```sh
+./sigusr.sh 1
+```
+
+
+
 # System architecture:
 ![](images/sysarch.png)
