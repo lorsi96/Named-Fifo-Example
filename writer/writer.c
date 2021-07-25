@@ -15,7 +15,7 @@
 #define FIFO_NAME         "myfifo"
 #define MAX_TXT_LEN       300
 #define START_OF_USR_TXT  5
-#define SIG_IND           7
+#define SIG_IND           5
 
 /* ****************************************************************************************************************** */
 /*                                                  Types Definitions                                                 */
@@ -74,7 +74,7 @@ static void _register_usr_signal_handler(SignalHandler_t handler) {
 /* ****************************************************************************************************************** */
 /* Buffers.*/
 static char textBuffer[MAX_TXT_LEN] = "DATA:";
-static char signalMsg[] = "SIGNAL:1";
+static char signalMsg[] = "SIGN:1";
 
 /* File Descriptor. */
 static int32_t fd;
@@ -110,7 +110,7 @@ int main(void) {
   
   for (;;) {
     char* outputBuffer = textBuffer + START_OF_USR_TXT;
-    fgets(outputBuffer, MAX_TXT_LEN - 5, stdin);
+    fgets(outputBuffer, MAX_TXT_LEN - START_OF_USR_TXT, stdin);
     if (strlen(outputBuffer) >= 1) { // Ignore if msg empty. Avoids capturing input if interrupted by signal.
       if ((bytesWrote = write(fd, textBuffer, strlen(textBuffer) - 1)) == -1) { // Remove the '\0' char.
         perror("write");
