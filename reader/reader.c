@@ -14,7 +14,7 @@
 /* ****************************************************************************************************************** */
 #define BUFFER_SIZE   300
 #define FIFO_NAME     "myfifo"
-#define BASE_PATH     "./logs/"
+#define BASE_PATH     "/tmp/"
 #define TEXTLOG       BASE_PATH "Log.txt"
 #define SIGNLOG       BASE_PATH "Sign.txt"
 
